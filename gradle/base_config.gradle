@@ -36,4 +36,9 @@ android {
     dexOptions {
         keepRuntimeAnnotatedClasses false
     }
+
+    dataBinding {
+        enabled true
+    }
+
 }

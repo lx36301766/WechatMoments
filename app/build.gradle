@@ -18,10 +18,19 @@ dependencies {
     androidTestImplementation deps.espresso.core
 
     implementation deps.support.appcompatV7
-    implementation deps.support.design
     implementation deps.support.recyclerView
     implementation deps.support.constraint_layout
     implementation deps.support.annotations
 
+    implementation deps.retrofit.runtime
+    implementation deps.retrofit.moshi
+    implementation deps.moshi.kotlin
+    kapt deps.moshi.kotlin_codegen
 
+    implementation deps.glide.runtime
+    implementation deps.glide.okhttp3
+    kapt deps.glide.compiler
+
+    implementation deps.ui.smart_refresh_layout
+    implementation deps.ui.smart_refresh_header
 }

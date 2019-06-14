@@ -13,6 +13,8 @@ android {
 
 dependencies {
     api deps.kotlin.stdlib
+    api deps.kotlin.coroutines_core
+    api deps.kotlin.coroutines_android
 }
 
 buildscript {
