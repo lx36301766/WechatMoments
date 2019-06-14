@@ -1,0 +1,27 @@
+apply plugin: 'com.android.application'
+
+apply from: "$gradle_root/base_config.gradle"
+
+android {
+
+    defaultConfig {
+        applicationId app_config.applicationId
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.espresso.core
+
+    implementation deps.support.appcompatV7
+    implementation deps.support.design
+    implementation deps.support.recyclerView
+    implementation deps.support.constraint_layout
+    implementation deps.support.annotations
+
+
+}

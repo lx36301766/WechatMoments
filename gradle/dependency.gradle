@@ -1,0 +1,126 @@
+ext.gradle_root = rootDir.absolutePath + "/gradle"
+
+
+def build_versions = [
+        target_sdk : 28,
+        min_sdk    : 19,
+        build_tools: "28.0.3",
+]
+ext.build_versions = build_versions
+
+
+def app_config = [
+        applicationId: "pl.atlantischi.wechatmoments",
+        versionCode  : 1000,
+        versionName  : '1.000',
+]
+ext.app_config = app_config
+
+
+
+
+def versions = [
+        android_gradle_plugin: "3.3.2",
+        kotlin               : "1.3.30",
+
+        support              : "27.0.2",
+        constraint_layout    : "1.1.3",
+
+        rxjava               : "2.1.3",
+        rxkotlin             : "2.3.0",
+        rxandroid            : "2.0.1",
+        rxbinding            : "3.0.0-alpha1",
+
+        retrofit             : "2.3.0",
+        retrofit_fastjson    : "2.1.0",
+
+        glide                : "4.9.0", // 4.8.0
+        glide_okhttp3        : "1.5.0@aar",
+
+        runner               : "1.0.2",
+        espresso             : "3.0.2",
+]
+ext.versions = versions
+
+
+
+
+
+def deps = [
+        android_gradle_plugin: "com.android.tools.build:gradle:$versions.android_gradle_plugin",
+        fastjson             : "com.alibaba:fastjson:$versions.fastjson",
+]
+
+
+def kotlin = [
+        stdlib    : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin",
+        plugin    : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+        extensions: "org.jetbrains.kotlin:kotlin-android-extensions:$versions.kotlin",
+]
+deps.kotlin = kotlin
+
+def support = [
+        supportV4        : "com.android.support:support-v4:$versions.support",
+        supportV13       : "com.android.support:support-v13:$versions.support",
+        appcompatV7      : "com.android.support:appcompat-v7:$versions.support",
+        cardview         : "com.android.support:cardview-v7:$versions.support",
+        recyclerView     : "com.android.support:recyclerview-v7:$versions.support",
+        design           : "com.android.support:design:$versions.support",
+        annotations      : "com.android.support:support-annotations:$versions.support",
+        constraint_layout: "com.android.support.constraint:constraint-layout:$versions.constraint_layout",
+]
+deps.support = support
+
+def rx = [
+        rxjava   : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
+        rxkotlin : "io.reactivex.rxjava2:rxkotlin:$versions.rxkotlin",
+        rxandroid: "io.reactivex.rxjava2:rxandroid:$versions.rxandroid",
+        rxbinding: "com.jakewharton.rxbinding3:rxbinding:$versions.rxbinding",
+]
+deps.rx = rx
+
+def retrofit = [
+        runtime : "com.squareup.retrofit2:retrofit:$versions.retrofit",
+        rxjava2 : "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit",
+        fastjson: "org.ligboy.retrofit2:converter-fastjson-android:$versions.retrofit_fastjson",
+]
+deps.retrofit = retrofit
+
+def glide = [
+        runtime : "com.github.bumptech.glide:glide:$versions.glide",
+        compiler: "com.github.bumptech.glide:compiler:$versions.glide",
+        okhttp3 : "com.github.bumptech.glide:okhttp3-integration:$versions.glide_okhttp3",
+]
+deps.glide = glide
+
+
+def test = [
+        junit : "junit:junit:4.12",
+        runner: "com.android.support.test:runner:$versions.runner",
+        rules : "com.android.support.test:rules:$versions.runner",
+]
+deps.test = test
+
+def espresso = [
+        core           : "com.android.support.test.espresso:espresso-core:$versions.espresso",
+        contrib        : "com.android.support.test.espresso:espresso-contrib:$versions.espresso",
+        web            : "com.android.support.test.espresso:espresso-web:$versions.espresso",
+        idling_resource: "com.android.support.test.espresso:espresso-idling-resource:$versions.espresso",
+        intents        : "com.android.support.test.espresso:espresso-intents:$versions.espresso",
+        remote         : "com.android.support.test.espresso:espresso-remote:$versions.espresso",
+        accessibility  : "com.android.support.test.espresso:espresso-accessibility:$versions.espresso",
+]
+deps.espresso = espresso
+
+
+
+ext.deps = deps
+
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    handler.mavenCentral()
+    handler.maven { url "https://jitpack.io" }
+}
+
+ext.addRepos = this.&addRepos
