@@ -26,7 +26,7 @@
                 android:id="@+id/nickname"
                 android:maxLines="1"
                 android:textSize="16sp"
-                android:textColor="@android:color/holo_green_dark"
+                android:textColor="@android:color/holo_blue_dark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -34,17 +34,29 @@
                 android:id="@+id/content"
                 android:textSize="14sp"
                 android:textColor="@android:color/black"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-        <ImageView
-                android:id="@+id/test_img"
-                android:layout_width="100dp"
-                android:layout_height="100dp"/>
+        <com.lzy.ninegrid.NineGridView
+                android:id="@+id/nine_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:ngv_gridSpacing="3dp"
+                app:ngv_maxSize="9"
+                app:ngv_mode="grid"
+                app:ngv_singleImageRatio="1"
+                app:ngv_singleImageSize="200dp"/>
 
         <LinearLayout
                 android:id="@+id/comments_wrapper"
                 android:background="#ddd"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

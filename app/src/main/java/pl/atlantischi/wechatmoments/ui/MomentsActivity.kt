@@ -1,4 +1,4 @@
-package pl.atlantischi.wechatmoments
+package pl.atlantischi.wechatmoments.ui
 
 import android.os.Bundle
 import android.os.Handler
@@ -17,12 +17,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.lzy.ninegrid.ImageInfo
+import com.lzy.ninegrid.NineGridView
+import com.lzy.ninegrid.preview.NineGridViewClickAdapter
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshHeader
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener
 import com.scwang.smartrefresh.layout.util.SmartUtil
+import pl.atlantischi.wechatmoments.R
 import pl.atlantischi.wechatmoments.util.immersive
 import pl.atlantischi.wechatmoments.util.setMargin
 import pl.atlantischi.wechatmoments.util.setPaddingSmart
@@ -30,6 +34,9 @@ import pl.atlantischi.wechatmoments.data.model.Tweet
 import pl.atlantischi.wechatmoments.util.bindView
 
 class MomentsActivity : AppCompatActivity() {
+
+    private var mOffset = 0
+    private var mScrollY = 0
 
     val toolbar: Toolbar by bindView(R.id.toolbar)
     val refreshLayout: SmartRefreshLayout by bindView(R.id.refreshLayout)
@@ -344,22 +351,29 @@ class MomentsActivity : AppCompatActivity() {
                 .setText(R.id.content, "${item.content} ${viewHolder.position}")
             Glide.with(mContext).load(item.sender?.avatar).into(viewHolder.getView<View>(R.id.avatar) as ImageView)
 
-            Glide.with(mContext).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg").into(viewHolder.getView<View>(R.id.test_img) as ImageView)
+//            Glide.with(mContext).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg").into(viewHolder.getView<View>(
+//                R.id.test_img
+//            ) as ImageView)
+
+            val imageInfos = mutableListOf<ImageInfo>()
+            item.images?.forEach { url ->
+                imageInfos.add(ImageInfo().apply {
+                    thumbnailUrl = url
+                    bigImageUrl = url
+                })
+            }
+            viewHolder.getView<NineGridView>(R.id.nine_grid).apply {
+                setAdapter(NineGridViewClickAdapter(mContext, imageInfos))
+            }
 
             val commentWrapper = viewHolder.getView<LinearLayout>(R.id.comments_wrapper)
-
-            item.comments?.let {
-                for (comment in it) {
-                    commentWrapper.addView(TextView(mContext).apply {
-                        text = "${comment?.sender?.nick} : ${comment?.content}"
-                    })
-                }
+            item.comments?.forEach { comment ->
+                commentWrapper.addView(TextView(mContext).apply {
+                    text = "${comment?.sender?.nick} : ${comment?.content}"
+                })
             }
         }
     }
-
-    private var mOffset = 0
-    private var mScrollY = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -437,7 +451,7 @@ class MomentsActivity : AppCompatActivity() {
         Handler().postDelayed({
             tweetList.add(Tweet().apply {
                 content = "沙发！"
-                images = arrayOf("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDy7HZaHxn15wWj6pXE4uMKAqHTC_uBgBlIzeeQSj2QaGgUzUmHg",
+                images = arrayOf("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
                     "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTlJRALAf-76JPOLohBKzBg8Ab4Q5pWeQhF5igSfBflE_UYbqu7",
                     "http://i.ytimg.com/vi/rGWI7mjmnNk/hqdefault.jpg")
                 sender = Tweet.Sender().apply {
@@ -467,9 +481,10 @@ class MomentsActivity : AppCompatActivity() {
 
             tweetList.add(Tweet().apply {
                 content = "沙发！"
-                images = arrayOf("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDy7HZaHxn15wWj6pXE4uMKAqHTC_uBgBlIzeeQSj2QaGgUzUmHg",
-                    "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTlJRALAf-76JPOLohBKzBg8Ab4Q5pWeQhF5igSfBflE_UYbqu7",
-                    "http://i.ytimg.com/vi/rGWI7mjmnNk/hqdefault.jpg")
+                images = arrayOf("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg")
                 sender = Tweet.Sender().apply {
                     username = "jport"
                     nick = "Joe Portman"
@@ -496,9 +511,7 @@ class MomentsActivity : AppCompatActivity() {
             })
             tweetList.add(Tweet().apply {
                 content = "沙发！"
-                images = arrayOf("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDy7HZaHxn15wWj6pXE4uMKAqHTC_uBgBlIzeeQSj2QaGgUzUmHg",
-                    "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTlJRALAf-76JPOLohBKzBg8Ab4Q5pWeQhF5igSfBflE_UYbqu7",
-                    "http://i.ytimg.com/vi/rGWI7mjmnNk/hqdefault.jpg")
+                images = arrayOf("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg")
                 sender = Tweet.Sender().apply {
                     username = "jport"
                     nick = "Joe Portman"
@@ -525,8 +538,17 @@ class MomentsActivity : AppCompatActivity() {
             })
             tweetList.add(Tweet().apply {
                 content = "沙发！"
-                images = arrayOf("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDy7HZaHxn15wWj6pXE4uMKAqHTC_uBgBlIzeeQSj2QaGgUzUmHg",
-                    "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTlJRALAf-76JPOLohBKzBg8Ab4Q5pWeQhF5igSfBflE_UYbqu7",
+                images = arrayOf("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560606833412&di=7386459b32fb16bce7f03b4165cda7a5&imgtype=0&src=http%3A%2F%2Fpic2.52pk.com%2Ffiles%2Fallimg%2F090626%2F1553504U2-2.jpg",
                     "http://i.ytimg.com/vi/rGWI7mjmnNk/hqdefault.jpg")
                 sender = Tweet.Sender().apply {
                     username = "jport"

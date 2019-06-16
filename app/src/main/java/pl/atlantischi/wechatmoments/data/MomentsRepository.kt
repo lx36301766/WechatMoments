@@ -11,23 +11,23 @@ class MomentsRepository private constructor(private val momentsDao: MomentsDao, 
 
     suspend fun getUserInfo(): UserInfo {
         var userInfo = momentsDao.getCachedUserInfo()
-        if (userInfo == null) userInfo = requestUserInfo()
+        if (userInfo == null) {
+            userInfo = network.fetchUserInfo()
+            momentsDao.cacheUserInfo(userInfo)
+        }
         return userInfo
-    }
-
-    private suspend fun requestUserInfo() = withContext(Dispatchers.IO) {
-        val userInfo = network.fetchUserInfo()
-        momentsDao.cacheUserInfo(userInfo)
-        userInfo
     }
 
     suspend fun getTweets(): MutableList<Tweet> {
         var tweets = momentsDao.getCachedTweets()
-        if (tweets == null) tweets = requestTweets()
+        if (tweets == null) {
+            tweets = network.fetchTweets()
+            momentsDao.cacheTweets(tweets)
+        }
         return tweets
     }
 
-    private suspend fun requestTweets() = withContext(Dispatchers.IO) {
+    suspend fun requestTweets() = withContext(Dispatchers.IO) {
         return@withContext network.fetchTweets().apply {
             momentsDao.cacheTweets(this)
         }
