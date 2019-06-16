@@ -2,20 +2,15 @@ package pl.atlantischi.wechatmoments.data.db
 
 import android.preference.PreferenceManager
 import androidx.core.content.edit
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import pl.atlantischi.wechatmoments.MomentsApplication
 import pl.atlantischi.wechatmoments.data.model.Tweet
 import pl.atlantischi.wechatmoments.data.model.UserInfo
+import pl.atlantischi.wechatmoments.data.network.ServiceCreator
 
 
 class MomentsDao {
 
-    val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
-
-    private val userInfoAdapter = moshi.adapter(UserInfo::class.java)
+    private val userInfoAdapter = ServiceCreator.moshi.adapter(UserInfo::class.java)
 
     fun getCachedUserInfo(): UserInfo? {
         val userInfo = PreferenceManager.getDefaultSharedPreferences(MomentsApplication.context).getString("userInfo", null)
@@ -31,12 +26,10 @@ class MomentsDao {
         }
     }
 
-    fun getCachedTweets(): MutableList<Tweet>? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    private val tweetDao = TweetDatabase.getInstance(MomentsApplication.context).getTweetDao()
 
-    fun cacheTweets(tweets: MutableList<Tweet>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    fun getCachedTweets() = tweetDao.getCachedTweets()
+
+    fun cacheTweets(tweets: List<Tweet>) = tweetDao.putCachedTweets(tweets)
 
 }

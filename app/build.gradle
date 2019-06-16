@@ -23,12 +23,16 @@ dependencies {
     implementation deps.support.constraint_layout
     implementation deps.support.annotations
 
-    def room_version = "2.1.0"
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    implementation deps.lifecycle.extensions
+    implementation deps.ktx.core
+    implementation deps.ktx.viewmodel
+
+    implementation deps.room.runtime
+    kapt deps.room.compiler
 
     implementation deps.retrofit.runtime
     implementation deps.retrofit.moshi
+    implementation deps.retrofit.scalars
     implementation deps.moshi.kotlin
     kapt deps.moshi.kotlin_codegen
 
@@ -36,15 +40,10 @@ dependencies {
 //    implementation deps.glide.okhttp3
     kapt deps.glide.compiler
 
-    implementation "androidx.core:core-ktx:1.0.2"
 
     implementation deps.ui.smart_refresh_layout
     implementation deps.ui.smart_refresh_header
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
-
-//    implementation 'com.github.assion:AssNineGridView:v1.0.2'
-    implementation 'com.jaeger.ninegridimageview:library:1.1.1'
-    implementation 'com.lzy.widget:ninegridview:0.2.0'
+    implementation deps.ui.bravh
+    implementation deps.ui.ninegridview
 
 }

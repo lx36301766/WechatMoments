@@ -18,7 +18,7 @@ class MomentsRepository private constructor(private val momentsDao: MomentsDao, 
         return userInfo
     }
 
-    suspend fun getTweets(): MutableList<Tweet> {
+    suspend fun getTweets(): List<Tweet> {
         var tweets = momentsDao.getCachedTweets()
         if (tweets == null) {
             tweets = network.fetchTweets()
@@ -29,7 +29,7 @@ class MomentsRepository private constructor(private val momentsDao: MomentsDao, 
 
     suspend fun requestTweets() = withContext(Dispatchers.IO) {
         return@withContext network.fetchTweets().apply {
-            momentsDao.cacheTweets(this)
+//            momentsDao.cacheTweets(this)
         }
     }
 

@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.lzy.ninegrid.NineGridView
+import com.scwang.smartrefresh.layout.header.ClassicsHeader
 
 class MomentsApplication : Application() {
 
@@ -19,21 +20,32 @@ class MomentsApplication : Application() {
         super.onCreate()
         context = this
 
-        NineGridView.setImageLoader(GlideImageLoader())
+        initializeThirdLibrary()
     }
 
-    class GlideImageLoader : NineGridView.ImageLoader {
+    private fun initializeThirdLibrary() {
 
-        override fun onDisplayImage(context: Context, imageView: ImageView, url: String) {
-            Glide.with(context).load(url)
-                .placeholder(android.R.drawable.btn_default)
-                .error(android.R.drawable.btn_default)
-                .into(imageView)
-        }
+        ClassicsHeader.REFRESH_HEADER_PULLING = ""
+        ClassicsHeader.REFRESH_HEADER_REFRESHING = ""
+        ClassicsHeader.REFRESH_HEADER_LOADING = ""
+        ClassicsHeader.REFRESH_HEADER_RELEASE = ""
+        ClassicsHeader.REFRESH_HEADER_FINISH = ""
+        ClassicsHeader.REFRESH_HEADER_FAILED = ""
+        ClassicsHeader.REFRESH_HEADER_UPDATE = ""
 
-        override fun getCacheImage(url: String): Bitmap? {
-            return null
-        }
+        NineGridView.setImageLoader(object : NineGridView.ImageLoader {
+
+            override fun getCacheImage(url: String?): Bitmap? {
+                return null
+            }
+
+            override fun onDisplayImage(context: Context, imageView: ImageView, url: String?) {
+                Glide.with(context).load(url)
+                    .placeholder(R.mipmap.image_default)
+                    .error(R.mipmap.image_default)
+                    .into(imageView)
+            }
+        })
     }
 
 }

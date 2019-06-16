@@ -8,7 +8,7 @@ import retrofit2.http.GET
 interface MomentsService {
 
     @GET("user/jsmith/tweets")
-    fun getTweets(): Call<MutableList<Tweet>>
+    fun getTweets(): Call<List<Tweet>>
 
     @GET("user/jsmith")
     fun getUserInfo(): Call<UserInfo>

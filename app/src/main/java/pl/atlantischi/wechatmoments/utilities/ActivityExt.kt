@@ -1,4 +1,4 @@
-package pl.atlantischi.wechatmoments.util
+package pl.atlantischi.wechatmoments.utilities
 
 import android.app.Activity
 import android.content.res.Resources
