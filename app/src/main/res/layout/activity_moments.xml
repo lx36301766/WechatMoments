@@ -12,7 +12,7 @@
             android:layout_height="600dp"
             android:layout_marginTop="-300dp"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/app_name"
+            android:contentDescription="@string/moments"
             android:scaleType="centerCrop"
             android:src="@mipmap/profile_default"/>
 
@@ -117,8 +117,9 @@
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:textSize="16sp"
-                    android:text="Moments"/>
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/moments"/>
         </androidx.appcompat.widget.ButtonBarLayout>
 
     </androidx.appcompat.widget.Toolbar>

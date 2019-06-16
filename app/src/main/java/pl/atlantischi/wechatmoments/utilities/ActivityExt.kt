@@ -38,9 +38,6 @@ fun Activity.immersive(color: Int = DEFAULT_COLOR, @FloatRange(from = 0.0, to = 
     }
 }
 
-/**
- * 创建假的透明栏
- */
 fun Activity.setTranslucentView(container: ViewGroup, color: Int, @FloatRange(from = 0.0, to = 1.0) alpha: Float) {
     if (Build.VERSION.SDK_INT >= 19) {
         val mixtureColor = mixtureColor(color, alpha)
@@ -57,7 +54,6 @@ fun Activity.setTranslucentView(container: ViewGroup, color: Int, @FloatRange(fr
     }
 }
 
-/** 增加View的paddingTop,增加的值为状态栏高度 (智能判断，并设置高度) */
 fun Activity.setPaddingSmart(view: View) {
     if (Build.VERSION.SDK_INT >= MIN_API) {
         val lp = view.layoutParams
@@ -71,7 +67,6 @@ fun Activity.setPaddingSmart(view: View) {
     }
 }
 
-/** 增加View上边距（MarginTop）一般是给高度为 WARP_CONTENT 的小控件用的 */
 fun Activity.setMargin(view: View) {
     if (Build.VERSION.SDK_INT >= MIN_API) {
         val lp = view.layoutParams
@@ -83,7 +78,6 @@ fun Activity.setMargin(view: View) {
 }
 
 
-/** 获取状态栏高度  */
 fun Activity.getStatusBarHeight(): Int {
     var result = 24
     val resId = resources.getIdentifier("status_bar_height", "dimen", "android")

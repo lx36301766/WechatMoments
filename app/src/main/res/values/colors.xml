@@ -6,4 +6,6 @@
     <color name="colorPrimaryOverlay">#cc0094ff</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="colorNickName">#FF155E97</color>
+
 </resources>

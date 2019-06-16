@@ -1,10 +1,10 @@
 package pl.atlantischi.wechatmoments.ui
 
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.toast
 import pl.atlantischi.wechatmoments.MomentsApplication
 import pl.atlantischi.wechatmoments.data.MomentsRepository
 import pl.atlantischi.wechatmoments.data.model.Tweet
@@ -26,17 +26,16 @@ class MomentsViewModel(private val repository: MomentsRepository) : ViewModel() 
         launch({
             userInfo.value = repository.getUserInfo()
         }, {
-            Toast.makeText(MomentsApplication.context, it.message, Toast.LENGTH_SHORT).show()
+            MomentsApplication.context.toast(it.message ?: "")
         })
     }
 
-    fun getTweetList() {
+    fun getTweetList(page: Int) {
         launch({
-            val result = repository.requestTweets()
+            val result = repository.requestTweets(page)
             tweetList.value = result
-
         }, {
-            Toast.makeText(MomentsApplication.context, it.message, Toast.LENGTH_SHORT).show()
+            MomentsApplication.context.toast(it.message ?: "")
         })
     }
 

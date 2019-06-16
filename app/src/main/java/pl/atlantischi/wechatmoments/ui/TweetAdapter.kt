@@ -1,7 +1,11 @@
 package pl.atlantischi.wechatmoments.ui
 
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -42,9 +46,15 @@ class TweetAdapter : BaseQuickAdapter<Tweet, BaseViewHolder>(R.layout.item_tweet
         if (item.comments == null || item.comments?.size == 0) {
             commentWrapper.visibility = INVISIBLE
         } else {
+            commentWrapper.removeAllViews()
+            commentWrapper.visibility = VISIBLE
             item.comments?.forEach { comment ->
                 commentWrapper.addView(TextView(mContext).apply {
-                    text = "${comment?.sender?.nick} : ${comment?.content}"
+                    val commentText = "${comment?.sender?.nick} : ${comment?.content}"
+                    val builder = SpannableStringBuilder(commentText).apply {
+                        setSpan(ForegroundColorSpan(resources.getColor(R.color.colorNickName)), 0, comment?.sender?.nick?.length ?: 0, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    text = builder
                 })
             }
         }

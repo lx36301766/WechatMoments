@@ -25,22 +25,24 @@ import pl.atlantischi.wechatmoments.utilities.*
 
 class MomentsActivity : AppCompatActivity() {
 
-    val viewModel by lazy { ViewModelProviders.of(this,
+    private val viewModel by lazy { ViewModelProviders.of(this,
         InjectorUtil.provideMomentsViewModelFactory(this)).get(MomentsViewModel::class.java) }
 
-    val toolbar: Toolbar by bindView(R.id.toolbar)
-    val refreshLayout: SmartRefreshLayout by bindView(R.id.refreshLayout)
-    val classicsHeader: ClassicsHeader by bindView(R.id.classics_header)
-    val profileImage: ImageView by bindView(R.id.profile_image)
-    val nickNameTv: TextView by bindView(R.id.nick_name)
-    val avatarImage: ImageView by bindView(R.id.avatar)
-    val tweetsListView: RecyclerView by bindView(R.id.tweets_list)
+    private val toolbar: Toolbar by bindView(R.id.toolbar)
+    private val refreshLayout: SmartRefreshLayout by bindView(R.id.refreshLayout)
+    private val classicsHeader: ClassicsHeader by bindView(R.id.classics_header)
+    private val profileImage: ImageView by bindView(R.id.profile_image)
+    private val nickNameTv: TextView by bindView(R.id.nick_name)
+    private val avatarImage: ImageView by bindView(R.id.avatar)
+    private val tweetsListView: RecyclerView by bindView(R.id.tweets_list)
 
-    val scrollView: NestedScrollView by bindView(R.id.nested_scroll_view)
-    val buttonBar: ButtonBarLayout by bindView(R.id.buttonBarLayout)
+    private val scrollView: NestedScrollView by bindView(R.id.nested_scroll_view)
+    private val buttonBar: ButtonBarLayout by bindView(R.id.buttonBarLayout)
 
     private var mOffset = 0
     private var mScrollY = 0
+
+    private var mListPage = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -51,7 +53,6 @@ class MomentsActivity : AppCompatActivity() {
         initView()
         observerData()
         viewModel.getUserInfo()
-        viewModel.getTweetList()
     }
 
     private fun initView() {
@@ -87,15 +88,19 @@ class MomentsActivity : AppCompatActivity() {
 
     private fun initRefreshLayout() {
         refreshLayout.apply {
+            setEnableLoadMore(true)
+            setEnableAutoLoadMore(true)
             setEnableOverScrollDrag(true)
             setEnableOverScrollBounce(true)
             setOnMultiPurposeListener(object : SimpleMultiPurposeListener() {
                 override fun onRefresh(refreshLayout: RefreshLayout) {
-                    refreshLayout.finishRefresh(3000)
+                    mListPage = 0
+                    viewModel.getTweetList(mListPage)
+                    (tweetsListView.adapter as TweetAdapter).setNewData(null)
                 }
 
                 override fun onLoadMore(refreshLayout: RefreshLayout) {
-                    refreshLayout.finishLoadMore(2000)
+                    viewModel.getTweetList(++mListPage)
                 }
 
                 override fun onHeaderMoving(header: RefreshHeader?, isDragging: Boolean, percent: Float, offset: Int,
@@ -105,6 +110,7 @@ class MomentsActivity : AppCompatActivity() {
                     toolbar.alpha = 1 - Math.min(percent, 1f)
                 }
             })
+            autoRefresh()
         }
     }
 
@@ -128,13 +134,13 @@ class MomentsActivity : AppCompatActivity() {
                 .into(profileImage)
         })
         viewModel.tweetList.observe(this, Observer { tweetList ->
-            val result = tweetList.filter {
-                if (it.content == null && (it.images == null || it.images?.size == 0)) {
-                    return@filter false
-                }
-                return@filter true
+            refreshLayout.finishRefresh()
+            if (tweetList.size < 5) {
+                refreshLayout.finishLoadMoreWithNoMoreData()
+            } else {
+                refreshLayout.finishLoadMore()
             }
-            (tweetsListView.adapter as TweetAdapter).addData(result)
+            (tweetsListView.adapter as TweetAdapter).addData(tweetList)
         })
 
     }

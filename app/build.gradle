@@ -26,9 +26,10 @@ dependencies {
     implementation deps.lifecycle.extensions
     implementation deps.ktx.core
     implementation deps.ktx.viewmodel
-
     implementation deps.room.runtime
     kapt deps.room.compiler
+
+    implementation deps.anko.commons
 
     implementation deps.retrofit.runtime
     implementation deps.retrofit.moshi
@@ -37,9 +38,7 @@ dependencies {
     kapt deps.moshi.kotlin_codegen
 
     implementation deps.glide.runtime
-//    implementation deps.glide.okhttp3
     kapt deps.glide.compiler
-
 
     implementation deps.ui.smart_refresh_layout
     implementation deps.ui.smart_refresh_header

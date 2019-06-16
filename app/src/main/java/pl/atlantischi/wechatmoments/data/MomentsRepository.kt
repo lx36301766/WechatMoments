@@ -9,6 +9,10 @@ import pl.atlantischi.wechatmoments.data.network.MomentsNetwork
 
 class MomentsRepository private constructor(private val momentsDao: MomentsDao, private val network: MomentsNetwork) {
 
+    private var allTweetData: List<Tweet>? = null
+
+    private val pageCount = 5
+
     suspend fun getUserInfo(): UserInfo {
         var userInfo = momentsDao.getCachedUserInfo()
         if (userInfo == null) {
@@ -27,10 +31,25 @@ class MomentsRepository private constructor(private val momentsDao: MomentsDao, 
         return tweets
     }
 
-    suspend fun requestTweets() = withContext(Dispatchers.IO) {
-        return@withContext network.fetchTweets().apply {
-//            momentsDao.cacheTweets(this)
+    suspend fun requestTweets(page: Int) = withContext(Dispatchers.IO) {
+        if (allTweetData == null) {
+            allTweetData = network.fetchTweets().filter {
+                if (it.content == null && (it.images == null || it.images?.size == 0)) {
+                    return@filter false
+                }
+                return@filter true
+            }
         }
+        val totalCount = allTweetData?.size ?: 0
+        var start = pageCount * page
+        var end = start + pageCount
+        if (start >= totalCount) {
+            start = totalCount
+            end = totalCount
+        } else if (end > totalCount) {
+            end = totalCount
+        }
+        return@withContext allTweetData?.subList(start, end)
     }
 
     companion object {
