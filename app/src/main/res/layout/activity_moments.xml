@@ -1,127 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="match_parent"
-            android:layout_height="600dp"
-            android:layout_marginTop="-300dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/moments"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/profile_default"/>
+    <data>
+        <variable name="viewModel" type="pl.atlantischi.wechatmoments.ui.MomentsViewModel"/>
+        <import type="pl.atlantischi.wechatmoments.R"/>
+    </data>
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/refreshLayout"
+
+    <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srlEnablePreviewInEditMode="false">
+            android:background="@android:color/white">
 
-        <com.scwang.smartrefresh.layout.header.ClassicsHeader
-                android:id="@+id/classics_header"
+        <ImageView
+                android:id="@+id/profile_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="4dp"
-                android:paddingBottom="5dp"
-                app:srlAccentColor="@android:color/white"/>
+                android:layout_height="600dp"
+                android:layout_marginTop="-300dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/moments"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{viewModel.userInfo.profileImage}"
+                app:placeholder="@{R.mipmap.profile_default}"
+                app:error="@{R.mipmap.profile_default}"/>
 
-        <androidx.core.widget.NestedScrollView
-                android:id="@+id/nested_scroll_view"
-                android:overScrollMode="never"
-                android:fillViewport="true"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                android:id="@+id/refreshLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:srlEnablePreviewInEditMode="false">
 
-            <LinearLayout
-                    android:orientation="vertical"
+            <com.scwang.smartrefresh.layout.header.ClassicsHeader
+                    android:id="@+id/classics_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="5dp"
+                    app:srlAccentColor="@android:color/white"/>
+
+            <androidx.core.widget.NestedScrollView
+                    android:id="@+id/nested_scroll_view"
+                    android:overScrollMode="never"
+                    android:fillViewport="true"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                <com.google.android.material.appbar.CollapsingToolbarLayout
-                        android:id="@+id/collapse"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:titleEnabled="false"
-                        app:contentScrim="?attr/colorPrimary"
-                        app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-                    <RelativeLayout
-                            android:layout_marginTop="200dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                        <TextView
-                                android:id="@+id/nick_name"
-                                android:layout_toLeftOf="@+id/avatar"
-                                android:textSize="16sp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginBottom="10dp"
-                                android:textColor="@android:color/black"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                        <View
-                                android:background="@android:color/white"
-                                android:layout_below="@id/nick_name"
-                                android:layout_width="match_parent"
-                                android:layout_height="40dp"/>
-
-                        <ImageView
-                                android:id="@+id/avatar"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginRight="5dp"
-                                android:layout_width="80dp"
-                                android:layout_height="80dp"/>
-
-                    </RelativeLayout>
-
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/tweets_list"
-                        android:background="@android:color/white"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                        android:overScrollMode="never"
+                <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                </androidx.recyclerview.widget.RecyclerView>
+                    <com.google.android.material.appbar.CollapsingToolbarLayout
+                            android:id="@+id/collapse"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:titleEnabled="false"
+                            app:contentScrim="?attr/colorPrimary"
+                            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            </LinearLayout>
+                        <RelativeLayout
+                                android:layout_marginTop="200dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
 
-        </androidx.core.widget.NestedScrollView>
+                            <TextView
+                                    android:text="@{viewModel.userInfo.nick}"
+                                    android:id="@+id/nick_name"
+                                    android:layout_toLeftOf="@+id/avatar"
+                                    android:textSize="16sp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:textColor="@android:color/black"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
 
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+                            <View
+                                    android:background="@android:color/white"
+                                    android:layout_below="@id/nick_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"/>
 
-    <androidx.appcompat.widget.Toolbar
-            style="@style/AppTheme.Toolbar"
-            android:id="@+id/toolbar"
-            android:background="@android:color/transparent"
-            android:layout_marginBottom="0dp"
-            app:navigationIcon="?attr/homeAsUpIndicator">
+                            <ImageView
+                                    app:imageUrl="@{viewModel.userInfo.avatar}"
+                                    android:id="@+id/avatar"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"/>
 
-        <androidx.appcompat.widget.ButtonBarLayout
-                android:id="@+id/buttonBarLayout"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content">
+                        </RelativeLayout>
 
-            <TextView
-                    android:id="@+id/title"
+                    </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/tweets_list"
+                            android:background="@android:color/white"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                            android:overScrollMode="never"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+        <androidx.appcompat.widget.Toolbar
+                style="@style/AppTheme.Toolbar"
+                android:id="@+id/toolbar"
+                android:background="@android:color/transparent"
+                android:layout_marginBottom="0dp"
+                app:navigationIcon="?attr/homeAsUpIndicator">
+
+            <androidx.appcompat.widget.ButtonBarLayout
+                    android:id="@+id/buttonBarLayout"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/white"
-                    android:text="@string/moments"/>
-        </androidx.appcompat.widget.ButtonBarLayout>
+                    android:layout_width="wrap_content">
 
-    </androidx.appcompat.widget.Toolbar>
+                <TextView
+                        android:id="@+id/title"
+                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/white"
+                        android:text="@string/moments"/>
 
-</FrameLayout>
+            </androidx.appcompat.widget.ButtonBarLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </FrameLayout>
+
+</layout>

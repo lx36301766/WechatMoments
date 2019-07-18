@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
 import pl.atlantischi.wechatmoments.MomentsApplication
+import pl.atlantischi.wechatmoments.R
 import pl.atlantischi.wechatmoments.data.MomentsRepository
 import pl.atlantischi.wechatmoments.data.model.Tweet
 import pl.atlantischi.wechatmoments.data.model.UserInfo
@@ -24,6 +25,7 @@ class MomentsViewModel(private val repository: MomentsRepository) : ViewModel() 
 
     fun getUserInfo() {
         launch({
+            R.mipmap.profile_default
             userInfo.value = repository.getUserInfo()
         }, {
             MomentsApplication.context.toast(it.message ?: "")

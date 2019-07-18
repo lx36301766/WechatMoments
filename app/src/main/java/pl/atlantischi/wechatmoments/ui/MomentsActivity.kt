@@ -8,6 +8,7 @@ import androidx.appcompat.widget.ButtonBarLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,23 +22,16 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener
 import com.scwang.smartrefresh.layout.util.SmartUtil
 import pl.atlantischi.wechatmoments.R
+import pl.atlantischi.wechatmoments.databinding.ActivityMomentsBinding
 import pl.atlantischi.wechatmoments.utilities.*
+import kotlin.math.min
 
 class MomentsActivity : AppCompatActivity() {
 
     private val viewModel by lazy { ViewModelProviders.of(this,
-        InjectorUtil.provideMomentsViewModelFactory(this)).get(MomentsViewModel::class.java) }
+        InjectorUtil.provideMomentsViewModelFactory()).get(MomentsViewModel::class.java) }
 
-    private val toolbar: Toolbar by bindView(R.id.toolbar)
-    private val refreshLayout: SmartRefreshLayout by bindView(R.id.refreshLayout)
-    private val classicsHeader: ClassicsHeader by bindView(R.id.classics_header)
-    private val profileImage: ImageView by bindView(R.id.profile_image)
-    private val nickNameTv: TextView by bindView(R.id.nick_name)
-    private val avatarImage: ImageView by bindView(R.id.avatar)
-    private val tweetsListView: RecyclerView by bindView(R.id.tweets_list)
-
-    private val scrollView: NestedScrollView by bindView(R.id.nested_scroll_view)
-    private val buttonBar: ButtonBarLayout by bindView(R.id.buttonBarLayout)
+    private val binding by lazy { DataBindingUtil.setContentView<ActivityMomentsBinding>(this, R.layout.activity_moments) }
 
     private var mOffset = 0
     private var mScrollY = 0
@@ -45,9 +39,9 @@ class MomentsActivity : AppCompatActivity() {
     private var mListPage = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_moments)
+
+        binding.viewModel = viewModel
 
         immersive()
         initView()
@@ -56,38 +50,41 @@ class MomentsActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+
         initTweetList()
         initRefreshLayout()
         initScrollView()
-        setMargin(classicsHeader)
-        classicsHeader.setDrawableMarginRight(-20.0f)
-        buttonBar.alpha = 0f
-        setPaddingSmart(toolbar)
-        toolbar.setBackgroundColor(0)
-        toolbar.setNavigationOnClickListener { finish() }
+        setMargin(binding.classicsHeader)
+        binding.classicsHeader.setDrawableMarginRight(-20.0f)
+
+        binding.buttonBarLayout.alpha = 0f
+
+        setPaddingSmart(binding.toolbar)
+        binding.toolbar.setBackgroundColor(0)
+        binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
     private fun initScrollView() {
         var lastScrollY = 0
         val h = SmartUtil.dp2px(170f)
         val color = ContextCompat.getColor(applicationContext, R.color.colorPrimary) and 0x00ffffff
-        scrollView.isNestedScrollingEnabled = true
-        scrollView.setOnScrollChangeListener(
+        binding.nestedScrollView.isNestedScrollingEnabled = true
+        binding.nestedScrollView.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 var scrollY = scrollY
                 if (lastScrollY < h) {
                     scrollY = Math.min(h, scrollY)
                     mScrollY = if (scrollY > h) h else scrollY
-                    buttonBar.alpha = 1f * mScrollY / h
-                    toolbar.setBackgroundColor(255 * mScrollY / h shl 24 or color)
-                    profileImage.translationY = (mOffset - mScrollY).toFloat()
+                    binding.buttonBarLayout.alpha = 1f * mScrollY / h
+                    binding.toolbar.setBackgroundColor(255 * mScrollY / h shl 24 or color)
+                    binding.profileImage.translationY = (mOffset - mScrollY).toFloat()
                 }
                 lastScrollY = scrollY
             })
     }
 
     private fun initRefreshLayout() {
-        refreshLayout.apply {
+        binding.refreshLayout.apply {
             setEnableLoadMore(true)
             setEnableAutoLoadMore(true)
             setEnableOverScrollDrag(true)
@@ -96,7 +93,7 @@ class MomentsActivity : AppCompatActivity() {
                 override fun onRefresh(refreshLayout: RefreshLayout) {
                     mListPage = 0
                     viewModel.getTweetList(mListPage)
-                    (tweetsListView.adapter as TweetAdapter).setNewData(null)
+                    (binding.tweetsList.adapter as TweetAdapter).setNewData(null)
                 }
 
                 override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -106,8 +103,8 @@ class MomentsActivity : AppCompatActivity() {
                 override fun onHeaderMoving(header: RefreshHeader?, isDragging: Boolean, percent: Float, offset: Int,
                                             headerHeight: Int, maxDragHeight: Int) {
                     mOffset = offset / 2
-                    profileImage.translationY = (mOffset - mScrollY).toFloat()
-                    toolbar.alpha = 1 - Math.min(percent, 1f)
+                    binding.profileImage.translationY = (mOffset - mScrollY).toFloat()
+                    binding.toolbar.alpha = 1 - min(percent, 1f)
                 }
             })
             autoRefresh()
@@ -115,7 +112,7 @@ class MomentsActivity : AppCompatActivity() {
     }
 
     private fun initTweetList() {
-        tweetsListView.apply {
+        binding.tweetsList.apply {
             setHasFixedSize(false)
             isNestedScrollingEnabled = false
             addItemDecoration(DividerItemDecoration(this@MomentsActivity, DividerItemDecoration.VERTICAL))
@@ -125,22 +122,22 @@ class MomentsActivity : AppCompatActivity() {
     }
 
     private fun observerData() {
-        viewModel.userInfo.observe(this, Observer { userInfo ->
-            nickNameTv.text = userInfo.nick
-            Glide.with(this).load(userInfo.avatar).into(avatarImage)
-            Glide.with(this).load(userInfo.profileImage)
-                .placeholder(R.mipmap.profile_default)
-                .error(R.mipmap.profile_default)
-                .into(profileImage)
-        })
+//        viewModel.userInfo.observe(this, Observer { userInfo ->
+//            binding.nickName.text = userInfo.nick
+//            Glide.with(this).load(userInfo.avatar).into(binding.avatar)
+//            Glide.with(this).load(userInfo.profileImage)
+//                .placeholder(R.mipmap.profile_default)
+//                .error(R.mipmap.profile_default)
+//                .into(binding.profileImage)
+//        })
         viewModel.tweetList.observe(this, Observer { tweetList ->
-            refreshLayout.finishRefresh()
+            binding.refreshLayout.finishRefresh()
             if (tweetList.size < 5) {
-                refreshLayout.finishLoadMoreWithNoMoreData()
+                binding.refreshLayout.finishLoadMoreWithNoMoreData()
             } else {
-                refreshLayout.finishLoadMore()
+                binding.refreshLayout.finishLoadMore()
             }
-            (tweetsListView.adapter as TweetAdapter).addData(tweetList)
+            (binding.tweetsList.adapter as TweetAdapter).addData(tweetList)
         })
 
     }
