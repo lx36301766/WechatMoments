@@ -1,11 +1,7 @@
 package pl.atlantischi.wechatmoments.ui
 
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.ButtonBarLayout
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
@@ -13,17 +9,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshHeader
 import com.scwang.smartrefresh.layout.api.RefreshLayout
-import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener
 import com.scwang.smartrefresh.layout.util.SmartUtil
 import pl.atlantischi.wechatmoments.R
 import pl.atlantischi.wechatmoments.databinding.ActivityMomentsBinding
-import pl.atlantischi.wechatmoments.utilities.*
+import pl.atlantischi.wechatmoments.utilities.InjectorUtil
+import pl.atlantischi.wechatmoments.utilities.immersive
+import pl.atlantischi.wechatmoments.utilities.setMargin
+import pl.atlantischi.wechatmoments.utilities.setPaddingSmart
 import kotlin.math.min
 
 class MomentsActivity : AppCompatActivity() {
@@ -50,37 +45,31 @@ class MomentsActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        binding.apply {
+            initTweetList()
+            initRefreshLayout()
+            initScrollView()
 
-        initTweetList()
-        initRefreshLayout()
-        initScrollView()
-        setMargin(binding.classicsHeader)
-        binding.classicsHeader.setDrawableMarginRight(-20.0f)
-
-        binding.buttonBarLayout.alpha = 0f
-
-        setPaddingSmart(binding.toolbar)
-        binding.toolbar.setBackgroundColor(0)
-        binding.toolbar.setNavigationOnClickListener { finish() }
+            buttonBarLayout.alpha = 0f
+            classicsHeader.apply {
+                setMargin(this)
+                setDrawableMarginRight(-20.0f)
+            }
+            toolbar.apply {
+                setPaddingSmart(this)
+                setNavigationOnClickListener { finish() }
+            }
+        }
     }
 
-    private fun initScrollView() {
-        var lastScrollY = 0
-        val h = SmartUtil.dp2px(170f)
-        val color = ContextCompat.getColor(applicationContext, R.color.colorPrimary) and 0x00ffffff
-        binding.nestedScrollView.isNestedScrollingEnabled = true
-        binding.nestedScrollView.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                var scrollY = scrollY
-                if (lastScrollY < h) {
-                    scrollY = Math.min(h, scrollY)
-                    mScrollY = if (scrollY > h) h else scrollY
-                    binding.buttonBarLayout.alpha = 1f * mScrollY / h
-                    binding.toolbar.setBackgroundColor(255 * mScrollY / h shl 24 or color)
-                    binding.profileImage.translationY = (mOffset - mScrollY).toFloat()
-                }
-                lastScrollY = scrollY
-            })
+    private fun initTweetList() {
+        binding.tweetsList.apply {
+            setHasFixedSize(false)
+            isNestedScrollingEnabled = false
+            addItemDecoration(DividerItemDecoration(this@MomentsActivity, DividerItemDecoration.VERTICAL))
+            layoutManager = LinearLayoutManager(this@MomentsActivity)
+            adapter = TweetAdapter()
+        }
     }
 
     private fun initRefreshLayout() {
@@ -111,25 +100,28 @@ class MomentsActivity : AppCompatActivity() {
         }
     }
 
-    private fun initTweetList() {
-        binding.tweetsList.apply {
-            setHasFixedSize(false)
-            isNestedScrollingEnabled = false
-            addItemDecoration(DividerItemDecoration(this@MomentsActivity, DividerItemDecoration.VERTICAL))
-            layoutManager = LinearLayoutManager(this@MomentsActivity)
-            adapter = TweetAdapter()
+    private fun initScrollView() {
+        binding.nestedScrollView.apply {
+            isNestedScrollingEnabled = true
+
+            var lastScrollY = 0
+            val h = SmartUtil.dp2px(170f)
+            val color = ContextCompat.getColor(applicationContext, R.color.colorPrimary) and 0x00ffffff
+            setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                    var scrollY = scrollY
+                    if (lastScrollY < h) {
+                        scrollY = Math.min(h, scrollY)
+                        mScrollY = if (scrollY > h) h else scrollY
+                        binding.buttonBarLayout.alpha = 1f * mScrollY / h
+                        binding.toolbar.setBackgroundColor(255 * mScrollY / h shl 24 or color)
+                        binding.profileImage.translationY = (mOffset - mScrollY).toFloat()
+                    }
+                    lastScrollY = scrollY
+                })
         }
     }
 
     private fun observerData() {
-//        viewModel.userInfo.observe(this, Observer { userInfo ->
-//            binding.nickName.text = userInfo.nick
-//            Glide.with(this).load(userInfo.avatar).into(binding.avatar)
-//            Glide.with(this).load(userInfo.profileImage)
-//                .placeholder(R.mipmap.profile_default)
-//                .error(R.mipmap.profile_default)
-//                .into(binding.profileImage)
-//        })
         viewModel.tweetList.observe(this, Observer { tweetList ->
             binding.refreshLayout.finishRefresh()
             if (tweetList.size < 5) {
@@ -139,7 +131,6 @@ class MomentsActivity : AppCompatActivity() {
             }
             (binding.tweetsList.adapter as TweetAdapter).addData(tweetList)
         })
-
     }
 
 }

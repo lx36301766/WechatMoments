@@ -1,4 +1,4 @@
-package pl.atlantischi.wechatmoments.ui;
+package pl.atlantischi.wechatmoments.utilities;
 
 import android.view.View;
 import android.view.ViewGroup;

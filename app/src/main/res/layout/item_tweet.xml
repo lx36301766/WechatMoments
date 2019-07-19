@@ -60,9 +60,8 @@
                     app:ngv_singleImageSize="200dp"/>
 
             <LinearLayout
-                    app:comments="@{tweet.comments}"
                     android:id="@+id/comments_wrapper"
-                    android:visibility="@{tweet.comments.isNullOrEmpty() ? View.INVISIBLE : View.VISIBLE}"
+                    android:visibility="@{tweet.comments == null || tweet.comments.length == 0 ? View.INVISIBLE : View.VISIBLE}"
                     android:background="#ddd"
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"

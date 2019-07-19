@@ -25,7 +25,6 @@ class MomentsViewModel(private val repository: MomentsRepository) : ViewModel() 
 
     fun getUserInfo() {
         launch({
-            R.mipmap.profile_default
             userInfo.value = repository.getUserInfo()
         }, {
             MomentsApplication.context.toast(it.message ?: "")
