@@ -8,6 +8,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.lzy.ninegrid.NineGridView
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
+import com.squareup.picasso.Picasso
 
 class MomentsApplication : Application() {
 
@@ -40,7 +41,7 @@ class MomentsApplication : Application() {
             }
 
             override fun onDisplayImage(context: Context, imageView: ImageView, url: String?) {
-                Glide.with(context).load(url)
+                Picasso.with(context).load(url)
                     .placeholder(R.mipmap.image_default)
                     .error(R.mipmap.image_default)
                     .into(imageView)

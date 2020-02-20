@@ -45,4 +45,5 @@ dependencies {
     implementation deps.ui.bravh
     implementation deps.ui.ninegridview
 
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }

@@ -29,7 +29,7 @@ class TweetAdapter : BaseQuickAdapter<Tweet, BaseViewHolder>(R.layout.item_tweet
     override fun convert(viewHolder: BaseViewHolder, item: Tweet) {
         viewHolder.setText(R.id.nickname, item.sender?.nick)
             .setText(R.id.content, item.content ?: "")
-        Glide.with(mContext).load(item.sender?.avatar).into(viewHolder.getView<View>(R.id.avatar) as ImageView)
+//        Glide.with(mContext).load(item.sender?.avatar).into(viewHolder.getView<View>(R.id.avatar) as ImageView)
 
         val imageInfos = mutableListOf<ImageInfo>()
         item.images?.forEach { image ->
